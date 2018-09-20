@@ -1,23 +1,24 @@
 require("babel-polyfill");
 const path = require('path');
+// const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+// const htmlWebpackPlugin = new HtmlWebpackPlugin({
+//     template: path.join(__dirname, "src/index.html"),
+//     filename: "./index.html"
+// });
+
 
 module.exports = {
-    // Example setup for your project:
-    // The entry module that requires or imports the rest of your project.
-    // Must start with `./`!
-    entry: ["babel-polyfill", path.resolve(__dirname, 'src', 'index.js')],
-    // Place output files in `./dist/my-app.js`
+    entry: ["babel-polyfill", path.resolve(__dirname, 'src', 'index.jsx')],
     output: {
-        path: __dirname + '/dist',
-        filename: 'my-app.js'
+        path: path.resolve(__dirname, 'output'),
+        filename: 'bundle.js'
+    },
+    resolve: {
+        extensions: ['.js', '.jsx']
     },
     module: {
-        rules: [
-            {
-                test: /\.json$/,
-                loader: 'json-loader'
-            },
-            {
+        rules: [{
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
                 use: {
@@ -30,9 +31,21 @@ module.exports = {
             }
         ]
     },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: './src/index.html'
+        })
+    ],
+    // plugins: [htmlWebpackPlugin, new webpack.DefinePlugin({
+    //     'process.env': { 'NODE_ENV': JSON.stringify('production') }
+    // })],
+    resolve: {
+        extensions: [".js", ".jsx"]
+    },
     devServer: {
         contentBase: './src',
-        publicPath: '/dist'
+        publicPath: '/output',
+        historyApiFallback: true
     },
     mode: "development"
 };

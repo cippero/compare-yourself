@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
-import { Menu } from 'semantic-ui-react';
+import { Menu, Container } from 'semantic-ui-react';
 import { Link, withRouter } from "react-router-dom";
+import styled from 'styled-components';
 import Routes from "./Routes";
-// import Header from './components/Header';
 import Footer from './components/Footer';
+
+const StyledContainer = styled(Container)`
+  margin-top: 5vh;
+`;
 
 class App extends Component {
   constructor(props) {
@@ -22,27 +26,30 @@ class App extends Component {
       isAuthenticated: this.state.isAuthenticated,
       userHasAuthenticated: this.userHasAuthenticated
     };
+
     return (
       <div>
         <Menu>
-            <Menu.Item header>This App</Menu.Item>
+            <Menu.Item 
+                header 
+                as={Link} to='/' 
+                onClick={this.handleItemClick}>Compare Yourself</Menu.Item>
             <Menu.Item
-                name='aboutUs'
-                active={this.state.activeItem === 'aboutUs'}
+                as={Link} to='/signup'
+                name='signup'
+                active={this.state.activeItem === 'signup'}
                 onClick={this.handleItemClick}
             />
             <Menu.Item 
-                name='jobs' 
-                active={this.state.activeItem === 'jobs'} 
+                as={Link} to='/login'
+                name='login' 
+                active={this.state.activeItem === 'login'} 
                 onClick={this.handleItemClick} 
             />
-            <Menu.Item
-                name='locations'
-                active={this.state.activeItem === 'locations'}
-                onClick={this.handleItemClick}
-            />
         </Menu>
-        <Routes childProps={childProps} />
+        <StyledContainer>
+          <Routes childProps={childProps} />
+        </StyledContainer>
         <Footer />
       </div>
     );

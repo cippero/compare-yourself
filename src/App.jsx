@@ -54,6 +54,12 @@ class App extends Component {
                   as={Link} to='/' 
                   onClick={this.handleItemClick}>Compare Yourself</Menu.Item>
               <Menu.Item 
+                  as={Link} to='/compare'
+                  name='compare' 
+                  active={this.state.activeItem === 'compare'} 
+                  onClick={this.handleItemClick} 
+                />
+              <Menu.Item 
                   as={Link} to='/logout'
                   name='logout' 
                   active={this.state.activeItem === 'logout'} 

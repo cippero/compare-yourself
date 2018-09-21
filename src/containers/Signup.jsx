@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
 import { Button, Form, Header } from 'semantic-ui-react';
 import { Auth } from "aws-amplify";
+import styled from 'styled-components';
+
+const StyledForm = styled(Form)`
+    background-color: ${props => props.theme.backgroundColor};
+    padding: 5vh;
+    border-radius: 5px;
+    border: solid black;
+`;
 
 export default class Signup extends Component {
     constructor(props) {
         super(props);
         this.state = {
             status: 'Signup'
+            ,isLoading: {}
             ,username: ''
             ,email: ''
             ,password: ''
@@ -20,7 +29,9 @@ export default class Signup extends Component {
 
     handleSubmit = async e => {
         e.preventDefault();
-        this.setState({ status: 'Signing in...' });
+        let isLoading = this.state.isLoading;
+        isLoading.loading = true;
+        this.setState({ status: 'Signing in...', isLoading: isLoading });
         try {
             const newUser = await Auth.signUp({
                 username: this.state.username
@@ -29,26 +40,31 @@ export default class Signup extends Component {
                     email: this.state.email
                 }
             });
-            this.setState({ newUser: newUser, status: 'Verify'});
+            delete isLoading.loading;
+            this.setState({ newUser: newUser, status: 'Verify', isLoading: isLoading});
         } catch (e) {
             alert(e.message);
             console.log(e);
-            this.setState({status: 'Signup'});
+            delete isLoading.loading;
+            this.setState({status: 'Signup', isLoading: isLoading});
         }
     }
 
     handleConfirmationSubmit = async e => {
         e.preventDefault();
-        this.setState({ status: 'Verifying...' });
+        let isLoading = this.state.isLoading;
+        isLoading.loading = true;
+        this.setState({ status: 'Verifying...', isLoading: isLoading });
         try {
             await Auth.confirmSignUp(this.state.username, this.state.confirmationCode);
             await Auth.signIn(this.state.username, this.state.password);
             this.props.userHasAuthenticated(true);
-            setTimeout(() => { this.props.history.push("/"); }, 500);
+            this.props.history.push("/");
         } catch (e) {
             alert(e.message);
             console.log(e);
-            this.setState({status: 'Verify'});
+            delete isLoading.loading;
+            this.setState({status: 'Verify', isLoading: isLoading});
         }
     }
 
@@ -65,7 +81,7 @@ export default class Signup extends Component {
 
     renderForm() {
         return (
-            <Form onSubmit={this.handleSubmit}>
+            <StyledForm {...this.state.isLoading} onSubmit={this.handleSubmit}>
                 <Header as='h2'>Please enter all fields to signup.</Header>
                 <Form.Field>
                     <label>Username</label>
@@ -104,13 +120,13 @@ export default class Signup extends Component {
                         {this.state.status}
                     </Button>
                 </Form.Field>
-            </Form>
+            </StyledForm>
         )
     };
 
     renderConfirmationForm() {
         return (
-            <Form onSubmit={this.handleConfirmationSubmit}>
+            <StyledForm {...this.state.isLoading} onSubmit={this.handleConfirmationSubmit}>
                 <Header as='h2'>Please check your email for the code.</Header>
                 <Form.Field>
                     <label>Confirmation Code</label>
@@ -126,7 +142,7 @@ export default class Signup extends Component {
                         {this.state.status}
                     </Button>
                 </Form.Field>
-            </Form>
+            </StyledForm>
         )
     };
 

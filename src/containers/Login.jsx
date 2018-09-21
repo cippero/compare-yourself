@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
 import { Button, Form, Header } from 'semantic-ui-react';
 import { Auth } from 'aws-amplify';
+import styled from 'styled-components';
+
+const StyledForm = styled(Form)`
+    background-color: ${props => props.theme.backgroundColor};
+    padding: 5vh;
+    border-radius: 5px;
+    border: solid black;
+`;
 
 export default class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
             status: 'Login'
+            ,isLoading: {}
             ,username: ''
             ,password: ''
         };
@@ -19,16 +28,19 @@ export default class Login extends Component {
 
     handleSubmit = async e => {
         e.preventDefault();
-        this.setState({ status: 'Logging in...' });
+        let isLoading = this.state.isLoading;
+        isLoading.loading = true;
+        this.setState({ status: 'Logging in...', isLoading: isLoading });
         try {
             await Auth.signIn(this.state.username, this.state.password);
             this.props.userHasAuthenticated(true);
             this.setState({ status: 'Success!' });
-            setInterval(() => { this.props.history.push('/') }, 500);
+            this.props.history.push('/');
         } catch (e) {
             alert(e.message);
             console.log(e);
-            this.setState({ status: 'Login' });
+            delete isLoading.loading;
+            this.setState({ status: 'Login', isLoading: isLoading });
         }
     }
 
@@ -38,7 +50,7 @@ export default class Login extends Component {
 
     render() {
         return (
-            <Form onSubmit={this.handleSubmit}>
+            <StyledForm {...this.state.isLoading} onSubmit={this.handleSubmit}>
                 <Header as='h2'>Please enter all fields to signup.</Header>
                 <Form.Field>
                     <label>Username</label>
@@ -60,7 +72,7 @@ export default class Login extends Component {
                         disabled={!this.validateForm() || this.state.status !== 'Login'}>
                         {this.state.status}
                 </Button>
-            </Form>
+            </StyledForm>
         );
     }
 }

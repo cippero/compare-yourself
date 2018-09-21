@@ -2,8 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from "react-router-dom";
 import Amplify from "aws-amplify";
+import { ThemeProvider } from 'styled-components';
 import config from "./config";
 import App from './App';
+
+const theme = {
+    backgroundColor: '#c0cac8'
+};
 
 Amplify.configure({
     Auth: {
@@ -29,6 +34,8 @@ Amplify.configure({
 
 ReactDOM.render(
     <Router>
-        <App />
+        <ThemeProvider theme={theme}>
+            <App />
+        </ThemeProvider>
     </Router>, 
     document.getElementById('root'));

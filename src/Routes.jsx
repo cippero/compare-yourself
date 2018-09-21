@@ -4,6 +4,7 @@ import AppliedRoute from './components/AppliedRoute';
 import Home from "./components/Home";
 import Login from "./containers/Login";
 import Signup from "./containers/Signup";
+import Compare from "./containers/Compare";
 import NotFound from "./containers/NotFound";
 
 export default ({ childProps }) =>
@@ -11,5 +12,6 @@ export default ({ childProps }) =>
         <AppliedRoute path="/" exact component={Home} props={childProps}/>
         <AppliedRoute path="/login" component={Login} props={childProps}/>
         <AppliedRoute path="/signup" component={Signup} props={childProps}/>
+        <AppliedRoute path="/compare" component={Compare} props={childProps}/>
         <Route component={NotFound} />
     </Switch>;

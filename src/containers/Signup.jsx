@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Form, Header } from 'semantic-ui-react';
+import { Auth } from "aws-amplify";
 
 export default class Signup extends Component {
     constructor(props) {
@@ -10,8 +11,56 @@ export default class Signup extends Component {
             ,email: ''
             ,password: ''
             ,confirmPassword: ''
+            ,confirmationCode: ''
             ,newUser: null
         };
+    }
+
+    handleChange = e => this.setState({ [e.target.id]: e.target.value });
+
+    handleSubmit = async e => {
+        e.preventDefault();
+        this.setState({ status: 'Signing in...' });
+        try {
+            const newUser = await Auth.signUp({
+                username: this.state.username
+                ,password: this.state.password
+                ,attributes: {
+                    email: this.state.email
+                }
+            });
+            this.setState({ newUser: newUser, status: 'Verify'});
+        } catch (e) {
+            alert(e.message);
+            console.log(e);
+            this.setState({status: 'Signup'});
+        }
+    }
+
+    handleConfirmationSubmit = async e => {
+        e.preventDefault();
+        this.setState({ status: 'Verifying...' });
+        try {
+            await Auth.confirmSignUp(this.state.username, this.state.confirmationCode);
+            await Auth.signIn(this.state.username, this.state.password);
+            this.props.userHasAuthenticated(true);
+            setTimeout(() => { this.props.history.push("/"); }, 500);
+        } catch (e) {
+            alert(e.message);
+            console.log(e);
+            this.setState({status: 'Verify'});
+        }
+    }
+
+    validateForm() {
+        return  this.state.username.length > 0  &&
+                this.state.email.length > 0     &&
+                this.state.password.length > 0  &&
+                this.state.password === this.state.confirmPassword
+    }
+
+    validateConfirmationForm() {
+        return this.state.confirmationCode.length > 0
     }
 
     renderForm() {
@@ -50,30 +99,11 @@ export default class Signup extends Component {
                             onChange={this.handleChange}
                             required />
                 </Form.Field>
-                {/* <Form.Field>
-                    <label>Age</label>
-                    <input placeholder='age' type='number' required/>
-                </Form.Field>
                 <Form.Field>
-                    <label>Height</label>
-                    <input placeholder='height' type='number' required/>
+                    <Button type='submit' disabled={!this.validateForm() || this.state.status !== 'Signup'}>
+                        {this.state.status}
+                    </Button>
                 </Form.Field>
-                <Form.Field>
-                    <label>Income</label>
-                    <input placeholder='income' type='number' required/>
-                </Form.Field>
-                <Form.Field>
-                    <label>First Name</label>
-                    <input placeholder='first name' />
-                </Form.Field>
-                <Form.Field>
-                    <label>Last Name</label>
-                    <input placeholder='last name' />
-                </Form.Field>
-                <Form.Field>
-                    <Checkbox label='I agree to the Terms and Conditions' />
-                </Form.Field> */}
-                <Button type='submit'>{this.state.status}</Button>
             </Form>
         )
     };
@@ -92,7 +122,7 @@ export default class Signup extends Component {
                             autoFocus />
                 </Form.Field>
                 <Form.Field>
-                    <Button type="submit" disabled={!this.validateConfirmationForm || this.state.status !== 'Verify'}>
+                    <Button type="submit" disabled={!this.validateConfirmationForm() || this.state.status !== 'Verify'}>
                         {this.state.status}
                     </Button>
                 </Form.Field>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Menu, Container } from 'semantic-ui-react';
 import { Link, withRouter } from "react-router-dom";
+import { Auth } from "aws-amplify";
 import styled from 'styled-components';
 import Routes from "./Routes";
 import Footer from './components/Footer';
@@ -19,7 +20,24 @@ class App extends Component {
     };
   }
 
+  async componentDidMount() {
+    try {
+      if (await Auth.currentSession()) this.userHasAuthenticated(true);
+    } catch (e) {
+      if (e !== 'No current user') alert(e);
+    }
+    this.setState({ isAuthenticating: false});
+  }
+
   handleItemClick = (e, { name }) => this.setState({ activeItem: name });
+
+  userHasAuthenticated = authenticated => this.setState({ isAuthenticated: authenticated });
+
+  handleLogout = async e => {
+    await Auth.signOut();
+    this.userHasAuthenticated(false);
+    this.props.history.push('/login');
+  }
 
   render() {
     const childProps = {
@@ -29,24 +47,37 @@ class App extends Component {
 
     return (
       <div>
-        <Menu>
-            <Menu.Item 
-                header 
-                as={Link} to='/' 
-                onClick={this.handleItemClick}>Compare Yourself</Menu.Item>
-            <Menu.Item
-                as={Link} to='/signup'
-                name='signup'
-                active={this.state.activeItem === 'signup'}
-                onClick={this.handleItemClick}
-            />
-            <Menu.Item 
-                as={Link} to='/login'
-                name='login' 
-                active={this.state.activeItem === 'login'} 
-                onClick={this.handleItemClick} 
-            />
-        </Menu>
+        {this.state.isAuthenticated
+          ? <Menu>
+              <Menu.Item 
+                  header 
+                  as={Link} to='/' 
+                  onClick={this.handleItemClick}>Compare Yourself</Menu.Item>
+              <Menu.Item 
+                  as={Link} to='/logout'
+                  name='logout' 
+                  active={this.state.activeItem === 'logout'} 
+                  onClick={this.handleLogout} 
+                />
+            </Menu>
+          : <Menu>
+              <Menu.Item 
+                  header 
+                  as={Link} to='/' 
+                  onClick={this.handleItemClick}>Compare Yourself</Menu.Item>
+              <Menu.Item
+                  as={Link} to='/signup'
+                  name='signup'
+                  active={this.state.activeItem === 'signup'}
+                  onClick={this.handleItemClick}
+              />
+              <Menu.Item 
+                  as={Link} to='/login'
+                  name='login' 
+                  active={this.state.activeItem === 'login'} 
+                  onClick={this.handleItemClick} 
+              />
+            </Menu>}
         <StyledContainer>
           <Routes childProps={childProps} />
         </StyledContainer>

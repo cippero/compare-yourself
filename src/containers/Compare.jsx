@@ -3,7 +3,7 @@ import { Form, Button, Header } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 const StyledForm = styled(Form)`
-    background-color: ${props => props.theme.backgroundColor};
+    background-color: ${props => props.theme.primaryColor};
     padding: 5vh;
     border-radius: 5px;
     border: solid black;

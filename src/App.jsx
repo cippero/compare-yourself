@@ -14,15 +14,20 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        isAuthenticated: false,
-        isAuthenticating: true,
-        activeItem: null
+        userToken: null
+        ,isAuthenticated: false
+        ,isAuthenticating: true
+        ,activeItem: null
     };
   }
 
   async componentDidMount() {
     try {
-      if (await Auth.currentSession()) this.userHasAuthenticated(true);
+      if (await Auth.currentSession()) {
+        this.userHasAuthenticated(true);
+        const user = await Auth.currentSession();
+        this.setState({ userToken: user.idToken.jwtToken });
+      }
     } catch (e) {
       if (e !== 'No current user') alert(e);
     }
@@ -41,8 +46,9 @@ class App extends Component {
 
   render() {
     const childProps = {
-      isAuthenticated: this.state.isAuthenticated,
-      userHasAuthenticated: this.userHasAuthenticated
+      userToken: this.state.userToken
+      ,isAuthenticated: this.state.isAuthenticated
+      ,userHasAuthenticated: this.userHasAuthenticated
     };
 
     return (

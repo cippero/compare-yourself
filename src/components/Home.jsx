@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Button } from 'semantic-ui-react';
+import { Auth } from 'aws-amplify';
 
 export default class Home extends Component {
     render() {

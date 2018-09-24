@@ -7,7 +7,7 @@ import Routes from "./Routes";
 import Footer from './components/Footer';
 
 const StyledContainer = styled(Container)`
-  margin-top: 5vh;
+  margin-top: ${props => props.theme.spacing};
 `;
 
 class App extends Component {

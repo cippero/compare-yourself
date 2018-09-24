@@ -5,9 +5,15 @@ import styled from 'styled-components';
 
 const StyledForm = styled(Form)`
     background-color: ${props => props.theme.primaryColor};
-    padding: 5vh;
-    border-radius: 5px;
-    border: solid black;
+    padding: ${props => props.theme.spacing};
+    border-radius: ${props => props.theme.borderRadius};
+    box-shadow: ${props => props.theme.shadow};
+`;
+
+const StyledButton = styled.div`
+    display: flex;
+    justify-content: center;
+    margin-top: ${props => props.theme.spacing};
 `;
 
 export default class Login extends Component {
@@ -51,7 +57,7 @@ export default class Login extends Component {
     render() {
         return (
             <StyledForm {...this.state.isLoading} onSubmit={this.handleSubmit}>
-                <Header as='h2'>Please enter all fields to signup.</Header>
+                <Header as='h2'>Please enter all fields to login</Header>
                 <Form.Field>
                     <label>Username</label>
                     <input  placeholder='username'
@@ -68,10 +74,13 @@ export default class Login extends Component {
                             onChange={this.handleChange}
                             required />
                 </Form.Field>
-                <Button type='submit'
-                        disabled={!this.validateForm() || this.state.status !== 'Login'}>
-                        {this.state.status}
-                </Button>
+                <StyledButton>
+                    <Button type='submit'
+                            disabled={!this.validateForm() || this.state.status !== 'Login'}>
+                            {this.state.status}
+                    </Button>
+                </StyledButton>
+                
             </StyledForm>
         );
     }

@@ -7,7 +7,10 @@ import config from "./config";
 import App from './App';
 
 const theme = {
-    primaryColor: '#c0cac8'
+    primaryColor: '#e7e7e7'
+    ,spacing: '5vh'
+    ,shadow: '3px 3px 5px 0px #888888'
+    ,borderRadius: '3px'
 };
 
 Amplify.configure({

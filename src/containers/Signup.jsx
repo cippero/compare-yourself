@@ -5,9 +5,15 @@ import styled from 'styled-components';
 
 const StyledForm = styled(Form)`
     background-color: ${props => props.theme.primaryColor};
-    padding: 5vh;
-    border-radius: 5px;
-    border: solid black;
+    padding: ${props => props.theme.spacing};
+    border-radius: ${props => props.theme.borderRadius};
+    box-shadow: ${props => props.theme.shadow};
+`;
+
+const StyledButton = styled.div`
+    display: flex;
+    justify-content: center;
+    margin-top: ${props => props.theme.spacing};
 `;
 
 export default class Signup extends Component {
@@ -82,7 +88,7 @@ export default class Signup extends Component {
     renderForm() {
         return (
             <StyledForm {...this.state.isLoading} onSubmit={this.handleSubmit}>
-                <Header as='h2'>Please enter all fields to signup.</Header>
+                <Header as='h2'>Please enter all fields to signup</Header>
                 <Form.Field>
                     <label>Username</label>
                     <input  placeholder='username'
@@ -115,11 +121,11 @@ export default class Signup extends Component {
                             onChange={this.handleChange}
                             required />
                 </Form.Field>
-                <Form.Field>
+                <StyledButton>
                     <Button type='submit' disabled={!this.validateForm() || this.state.status !== 'Signup'}>
                         {this.state.status}
                     </Button>
-                </Form.Field>
+                </StyledButton>
             </StyledForm>
         )
     };
@@ -137,11 +143,11 @@ export default class Signup extends Component {
                             required
                             autoFocus />
                 </Form.Field>
-                <Form.Field>
+                <StyledButton>
                     <Button type="submit" disabled={!this.validateConfirmationForm() || this.state.status !== 'Verify'}>
                         {this.state.status}
                     </Button>
-                </Form.Field>
+                </StyledButton>
             </StyledForm>
         )
     };

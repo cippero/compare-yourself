@@ -21,9 +21,11 @@ export default class CompareAll extends Component {
     async componentDidMount() {
         try {
             const user = await Auth.currentSession();
+            // console.log(user.idToken.jwtToken);
+            const queryParam = `?accessToken=${user.accessToken.jwtToken}`;
             const response = await axios({
                 method: 'GET'
-                ,url: 'https://38oovlytec.execute-api.us-west-2.amazonaws.com/dev/compare-yourself/all'
+                ,url: 'https://38oovlytec.execute-api.us-west-2.amazonaws.com/dev/compare-yourself/all' + queryParam
                 ,headers:   {'Content-Type': 'application/json',
                             'Authorization': user.idToken.jwtToken}
             });
@@ -40,7 +42,6 @@ export default class CompareAll extends Component {
                 <Card key={i}>
                     <Card.Content as={Link} to={{ pathname: '/compare/single', entry: entry }}>
                         <Card.Header>Entry {i}</Card.Header>
-                        {/* <Card.Description>Matthew is a pianist living in Nashville.</Card.Description> */}
                         <List>
                             <List.Item>
                                 <List.Header>Age</List.Header>

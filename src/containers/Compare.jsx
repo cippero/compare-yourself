@@ -45,7 +45,7 @@ export default class Compare extends Component {
                 ,height: +this.state.height
                 ,income: +this.state.income
             };
-            console.log(data);
+            // console.log(data);
             const response = await axios({
                 method: 'POST', 
                 url: 'https://38oovlytec.execute-api.us-west-2.amazonaws.com/dev/compare-yourself', 
@@ -53,23 +53,8 @@ export default class Compare extends Component {
                             'Authorization': user.idToken.jwtToken}, 
                 data: JSON.stringify(data)
             });
-            console.log(response);
-        } catch (e) {
-            alert(e.message);
-            console.log(e);
-        }
-    }
-
-    async getAll() {
-        try {
-            const user = await Auth.currentSession();
-            const response = await axios({
-                method: 'GET'
-                ,url: 'https://38oovlytec.execute-api.us-west-2.amazonaws.com/dev/compare-yourself/all'
-                ,headers:   {'Content-Type': 'application/json',
-                            'Authorization': user.idToken.jwtToken}
-            });
-            console.log(response);
+            this.props.history.push("/compare/single");
+            // console.log(response);
         } catch (e) {
             alert(e.message);
             console.log(e);

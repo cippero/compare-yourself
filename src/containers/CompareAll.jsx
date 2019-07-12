@@ -21,7 +21,6 @@ export default class CompareAll extends Component {
     async componentDidMount() {
         try {
             const user = await Auth.currentSession();
-            // console.log(user.idToken.jwtToken);
             const queryParam = `?accessToken=${user.accessToken.jwtToken}`;
             const response = await axios({
                 method: 'GET'
